@@ -9,21 +9,22 @@
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
         <item>
-            <title><![CDATA[Why Your p99 Latency Destroys Node.js Event Loop Throughput]]></title>
+            <title><![CDATA[Why Your p99 Latency Destroys Node.js Event Loop Throughput - Theory and Practice]]></title>
             <link>https://blog.lwpsoftwares.com/blog/2026/04/24/nodejs-eventloop-mg1-simulator</link>
             <guid>https://blog.lwpsoftwares.com/blog/2026/04/24/nodejs-eventloop-mg1-simulator</guid>
             <pubDate>Fri, 24 Apr 2026 00:00:00 GMT</pubDate>
             <description><![CDATA[An interactive M/G/1 queue simulator that shows why a slow tail latency wrecks throughput — and what the event loop cost really looks like.]]></description>
-            <content:encoded><![CDATA[<p>Everyone is tired of listening "Node.js runs on a single event loop" and related blogposts. I am aware of it.</p>
+            <content:encoded><![CDATA[<p>Everyone is tired of listening "Node.js runs on a single event loop" and related claims. I am aware of it.</p>
 <p><em>"One slow task blocking that loop means every other request waits."</em></p>
 <p>Engineers know this, but knowing is different from understanding and seeing in action.</p>
 <p>This post is an interactive playground: tweak arrival rate and latency distribution, and watch what happens to queue depth and response time. The simulation runs entirely in your browser via a Web Worker.</p>
+<div class="theme-admonition theme-admonition-info admonition_xJq3 alert alert--info"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"></path></svg></span>New to queueing theory?</div><div class="admonitionContent_BuS1"><p>Terms like <strong>Markovian</strong>, <strong>service time</strong>, and <strong>general distribution</strong> are defined in the <a class="" href="https://blog.lwpsoftwares.com/docs/learn-in-public/Engineering/Queueing-Theory-Glossary">Queueing Theory Glossary</a>.</p></div></div>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-model">The model<a href="https://blog.lwpsoftwares.com/blog/2026/04/24/nodejs-eventloop-mg1-simulator#the-model" class="hash-link" aria-label="Direct link to The model" title="Direct link to The model" translate="no">​</a></h2>
 <p>A single event loop is a single-server queue. Requests arrive, get processed one at a time, and every arriving request that finds the server busy joins the queue.</p>
 <p>This is the classic <strong>M/G/1 queue</strong>:</p>
 <ul>
-<li class=""><strong>M</strong> — arrivals are Markovian (Poisson/exponential inter-arrival)</li>
-<li class=""><strong>G</strong> — service times follow a <em>general</em> distribution</li>
+<li class=""><strong>M</strong> — arrivals are <a href="https://docs/learn-in-public/Engineering/Queueing-Theory-Glossary#markovian-memoryless#markovian-memoryless" target="_blank" rel="noopener noreferrer" class="">Markovian (Poisson/exponential inter-arrival)</a></li>
+<li class=""><strong>G</strong> — <a href="https://docs/learn-in-public/Engineering/Queueing-Theory-Glossary#service-time-s#service-time-s" target="_blank" rel="noopener noreferrer" class="">service times</a> follow a <a class="" href="https://blog.lwpsoftwares.com/docs/learn-in-public/Engineering/Queueing-Theory-Glossary#general-distribution-g">general distribution</a></li>
 <li class=""><strong>1</strong> — one server (the event loop thread)</li>
 </ul>
 <p>For an M/G/1 queue, the <a href="https://en.wikipedia.org/wiki/Pollaczek%E2%80%93Khinchine_formula" target="_blank" rel="noopener noreferrer" class="">Pollaczek–Khinchine formula</a> gives the expected waiting time:</p>
